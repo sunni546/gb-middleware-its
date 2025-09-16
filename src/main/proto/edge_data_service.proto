@@ -1,0 +1,268 @@
+syntax = "proto3";
+option java_package = "com.middleware.grpc";
+option java_outer_classname = "EdgeSaveProto";
+import "google/protobuf/empty.proto";
+
+package edge;
+
+// 실시간 데이터 및 통계 데이터를 처리하는 서비스 정의
+service EdgeDataService {
+  // 접근로별 통계 데이터를 수신하는 Unary RPC
+  rpc SaveSoitgaprdstats(SoitgaprdstatsRequest) returns (EdgeReply);
+
+  // 회전별 통계 데이터를 수신하는 Unary RPC
+  rpc SaveSoitgturntypestats(SoitgturntypestatsRequest) returns (EdgeReply);
+
+  // 차종별 통계 데이터를 수신하는 Unary RPC
+  rpc SaveSoitgkncrstats(SoitgkncrstatsRequest) returns (EdgeReply);
+
+  // 차로별 통계 데이터를 수신하는 Unary RPC
+  rpc SaveSoitglanestats(SoitglanestatsRequest) returns (EdgeReply);
+
+  // 보행자 데이터를 수신하는 Unary RPC
+  rpc SaveSoitgcwdtinfo(SoitgcwdtinfoRequest) returns (EdgeReply);
+
+  // 접근로별 데이터를 수신하는 Unary RPC
+  rpc SaveSoitgaprdqueu(SoitgaprdqueuRequest) returns (EdgeReply);
+
+  // 차로별 데이터를 수신하는 Unary RPC
+  rpc SaveSoitglanequeu(SoitglanequeuRequest) returns (EdgeReply);
+
+  // 상황 발생 데이터를 수신하는 Unary RPC
+  rpc SaveSoitgunacevet_S(Soitgunacevet_S_Request) returns (EdgeReply);
+
+  // 상황 진행중 데이터를 수신하는 Unary RPC
+  rpc SaveSoitgunacevet_C(Soitgunacevet_C_Request) returns (EdgeReply);
+
+  // 상황 종료 데이터를 수신하는 Unary RPC
+  rpc SaveSoitgunacevet_E(Soitgunacevet_E_Request) returns (EdgeReply);
+
+  // 2K 실시간 차량검지 데이터를 수신하는 Unary RPC
+  rpc SaveSoitgrtmdtinfo_2K(Soitgrtmdtinfo_2K_Request) returns (EdgeReply);
+
+  // 함체 상태 정보 데이터를 수신하는 Unary RPC
+  rpc SaveSoitgenclsttsinfo(SoitgenclsttsinfoRequest) returns (EdgeReply);
+
+  // 카메라 상태 정보 데이터를 수신하는 Unary RPC
+  rpc SaveSoitgcamrsttsinfo(SoitgcamrsttsinfoRequest) returns (EdgeReply);
+
+  // Merge 데이터를 수신하는 Unary RPC
+  rpc SaveSoitgrtmdtinfo(SoitgrtmdtinfoRequest) returns (EdgeReply);
+
+  // 4K 실시간 차량검지 데이터를 수신하는 Unary RPC
+  rpc SaveSoitgrtmdtinfo_4K(Soitgrtmdtinfo_4K_Request) returns (EdgeReply);
+}
+
+// 엣지 응답 메시지
+message EdgeReply {
+  int32 status_code = 1;
+  string message = 2;
+}
+
+// 접근로별 통계 데이터 수집
+message SoitgaprdstatsRequest {
+  string spot_camr_id = 1; //현장 카메라 ID
+  int64 hr_type_cd = 2; //시간 유형 코드
+  int64 stats_bgng_unix_tm = 3; //통계 시작 유닉스 시간
+  int64 stats_end_unix_tm = 4; //통계 종료 유닉스 시간
+  int64 totl_trvl = 5; //총 교통량
+  float avg_stln_dttn_sped = 6; //평균 정지선 검지 속도
+  float avg_sect_sped = 7; //평균 구간 속도
+  int64 avg_trfc_dnst = 8; //평균 교통 밀도
+  int64 min_trfc_dnst = 9; //최소 교통 밀도
+  int64 max_trfc_dnst = 10; //최대 교통 밀도
+  float avg_lane_ocpn_rt = 11; //평균 차로 점유율
+  string unique_key = 12;
+}
+
+// 회전별 통계 데이터 수집
+message SoitgturntypestatsRequest {
+  string spot_camr_id = 1; // 현장 카메라 ID
+  int64 hr_type_cd = 2; //시간 유형 코드
+  int64 turn_type_cd = 3; //회전 유형 코드
+  int64 stats_bgng_unix_tm = 4; //통계 시작 유닉스 시간
+  int64 stats_end_unix_tm = 5; //통계 종료 유닉스 시간
+  int64 kncr1_trvl = 6; //차종1 교통량
+  int64 kncr2_trvl = 7; //차종2 교통량
+  int64 kncr3_trvl = 8; //차종3 교통량
+  int64 kncr4_trvl = 9; //차종4 교통량
+  int64 kncr5_trvl = 10; //차종5 교통량
+  int64 kncr6_trvl = 11; //차종6 교통량
+  float avg_stln_dttn_sped = 12; //평균 정지선 검지 속도
+  float avg_sect_sped = 13; //평균 구간 속도
+  string unique_key = 14;
+}
+
+// 차종별 통계 데이터 정의
+message SoitgkncrstatsRequest {
+  string spot_camr_id = 1; // 현장 카메라 ID
+  int64 hr_type_cd = 2; //시간 유형 코드 5분 or 현시
+  string kncr_cd = 3; //차종 코드
+  int64 stats_bgng_unix_tm = 4; //통계 시작 유닉스 시간
+  int64 stats_end_unix_tm = 5; //통계 종료 유닉스 시간
+  int64 totl_trvl = 6; //총 교통량
+  float avg_stln_dttn_sped = 7; //평균 정지선 검지 속도
+  float avg_sect_sped = 8; //평균 구간 속도
+  string unique_key = 9;
+}
+
+// 차로별 통계 데이터 수집
+message SoitglanestatsRequest {
+  string spot_camr_id = 1; // 현장 카메라 ID
+  int64 hr_type_cd = 2; //시간 유형 코드 5분 or 현시
+  int64 lane_no = 3; //차로 번호
+  int64 stats_bgng_unix_tm = 4; //통계 시작 유닉스 시간
+  int64 stats_end_unix_tm = 5; //통계 종료 유닉스 시간
+  int64 totl_trvl = 6; //총 교통량
+  float avg_stln_dttn_sped = 7; //평균 정지선 검지 속도
+  float avg_sect_sped = 8; //평균 구간 속도
+  int64 avg_trfc_dnst = 9; //평균 교통 밀도
+  int64 min_trfc_dnst = 10; //최소 교통 밀도
+  int64 max_trfc_dnst = 11; //최대 교통 밀도
+  float ocpn_rt = 12; //점유율
+  string unique_key = 13;
+}
+
+// 보행자 데이터 수집
+message SoitgcwdtinfoRequest {
+  string spot_camr_id = 1; // 현장 카메라 ID
+  int64 trce_id = 2; //트래킹 ID
+  int64 dttn_unix_tm = 3; //검지 유닉스 시간
+  string drct_se_cd = 4; //방향 구분 코드
+  string unique_key = 5;
+}
+
+// 접근로별 데이터 수집
+message SoitgaprdqueuRequest {
+  string spot_camr_id = 1; // 현장 카메라 ID
+  int64 stats_bgng_unix_tm = 2; //통계 시작 유닉스 시간
+  int64 stats_end_unix_tm = 3; //통계 종료 유닉스 시간
+  float rmnn_queu_lngt = 4; //잔여 대기 행렬 길이
+  float max_queu_lngt = 5; //최대 대기 행렬 길이
+  string img_path_nm = 6; //이미지 경로명
+  string img_file_nm = 7; //이미지 파일명
+  string unique_key = 8;
+}
+
+// 차로별 데이터 수집
+message SoitglanequeuRequest {
+  string spot_camr_id = 1; //현장 카메라 ID
+  int64 lane_no = 2; //차로 번호
+  int64 stats_bgng_unix_tm = 3; //통계 시작 유닉스 시간
+  int64 stats_end_unix_tm = 4; //통계 종료 유닉스 시간
+  float rmnn_queu_lngt = 5; //잔여 대기 행렬 길이
+  float max_queu_lngt = 6; //최대 대기 행렬 길이
+  string img_path_nm = 7; //이미지 경로명
+  string img_file_nm = 8; //이미지 파일명
+  string unique_key = 9;
+}
+
+// 상황 발생 데이터 수집
+message Soitgunacevet_S_Request {
+  string spot_camr_id = 1; //현장 카메라 ID
+  int64 trce_id = 2; //트래킹 ID
+  int64 ocrn_unix_tm = 3; //발생 유닉스 시간
+  string evet_type_cd = 4; //이벤트 유형 코드
+  string img_path_nm = 5; //이미지 경로명
+  string img_file_nm = 6; //이미지 파일명
+  string unique_key = 7;
+}
+
+// 상황 진행중 데이터 수집
+message Soitgunacevet_C_Request {
+  string spot_camr_id = 1; //현장 카메라 ID
+  int64 trce_id = 2; //트래킹 ID
+  int64 ocrn_unix_tm = 3; //발생 유닉스 시간
+  int64 prcs_unix_tm = 4; //처리 유닉스 시간
+  string unique_key = 5;
+}
+
+// 상황 종료 데이터 수집
+message Soitgunacevet_E_Request {
+  string spot_camr_id = 1; //현장 카메라 ID
+  int64 trce_id = 2; //트래킹 ID
+  int64 ocrn_unix_tm = 3; //발생 유닉스 시간
+  int64 end_unix_tm = 4; //종료 유닉스 시간
+  string unique_key = 5;
+}
+
+// 2K 실시간 차량검지 데이터 수집
+message Soitgrtmdtinfo_2K_Request {
+  string spot_camr_id = 1; //현장 카메라 ID
+  string kncr_cd = 2; //차종 코드
+  int64 lane_no = 3; //차로 번호
+  string turn_type_cd = 4; //회전 유형 코드
+  int64 turn_dttn_unix_tm = 5; //회전 검지 유닉스 시간
+  float turn_dttn_sped = 6; //회전 검지 속도
+  int64 stln_pasg_unix_tm = 7; //정지선 통과 유닉스 시간
+  float stln_dttn_sped = 8; //정지선 검지 속도
+  float vhcl_sect_sped = 9; //차량 구간 속도
+  int64 frst_obsrvn_unix_tm = 10; //최초 관측 유닉스 시간
+  int64 vhcl_obsrvn_hr = 11; //차량 관측 시간
+  string img_path_nm = 12; //이미지 경로명
+  string vhcl_img_file_nm = 13; //차량 이미지 파일명
+  string vhcl_dttn_2k_id = 14; //차량 검지 2K ID
+  string unique_key = 15;
+}
+
+// 함체 상태 정보 데이터 수집
+message SoitgenclsttsinfoRequest {
+  string spot_camr_id = 1; //현장 카메라 ID
+  int64 prcs_unix_tm = 2; //처리 유닉스 시간
+  string cnmc_stts_cd = 3; //통신 상태 코드
+  string eqpm_stts_cd = 4; //장비 상태 코드
+  string eqpm_tmpt = 5; //장비 온도
+  string pann_stts_cd = 6; //팬 상태 코드
+  string hetr_stts_cd = 7; //히터 상태 코드
+  string encl_open_yn = 8; //함체 개방 여부
+  string unique_key = 9;
+}
+
+// 카메라 상태 정보 데이터 수집
+message SoitgcamrsttsinfoRequest {
+  string spot_camr_id = 1; //현장 카메라 ID
+  string instl_locn_no = 2; //설치 위치 번호
+  int64 prcs_unix_tm = 3; //처리 유닉스 시간
+  string camr_2k_stts_cd = 4; //2K 카메라 상태 코드
+  string ecamr_2k_stts_cd = 5; //2Ke 카메라 상태 코드
+  string camr_4k_stts_cd = 6; //4K 카메라 상태 코드
+  string ecamr_4k_stts_cd = 7; //4Ke 카메라 상태 코드
+  string unique_key = 8;
+}
+
+// Merge 데이터 수집
+message SoitgrtmdtinfoRequest {
+  string spot_camr_id = 1; //현장 카메라 ID
+  string kncr_cd = 2; //차종 코드
+  string lane_no = 3; //차로 번호
+  string turn_type_cd = 4; //회전 유형 코드
+  int64 turn_dttn_unix_tm = 5; //회전 검지 유닉스 시간
+  float turn_dttn_sped = 6; //회전 검지 속도
+  int64 stln_pasg_unix_tm = 7; //정지선 통과 유닉스 시간
+  float stln_dttn_sped = 8; //정지선 검지 속도
+  float vhcl_sect_sped = 9; //차량 구간 속도
+  int64 frst_obsrvn_unix_tm = 10; //최초 관측 유닉스 시간
+  int64 vhcl_obsrvn_hr = 11; //차량 관측 시간
+  string vhno_nm = 12; //차량 번호명
+  string vhno_dttn_yn = 13; //차량 번호 검지 여부
+  string img_path_nm = 14; //이미지 경로명
+  string vhcl_img_file_nm = 15; //차량 이미지 파일명
+  string nopl_img_file_nm = 16; //번호판 이미지 파일명
+  string vhcl_dttn_id = 17; //차량 검지 ID
+  string unique_key = 18;
+}
+
+// 4K 실시간 차량 검지 정보
+message Soitgrtmdtinfo_4K_Request {
+  string spot_camr_id = 1; //현장 카메라 ID
+  string kncr_cd = 2; //차종 코드
+  int64 lane_no = 3; //차로 번호
+  int64 stln_pasg_unix_tm = 4; //정지선 통과 유닉스 시간
+  string vhno_nm = 5; //차량 번호명
+  string vhno_dttn_yn = 6; //차량번호검지 여부
+  string img_path_nm = 7; //이미지 경로명
+  string vhcl_img_file_nm = 8; //차량 이미지 파일명
+  string nopl_img_file_nm = 9; //번호판 이미지 파일명
+  string vhcl_dttn_4k_id = 10; //차량 검지 4K ID
+  string unique_key = 11;
+}

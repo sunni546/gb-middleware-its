@@ -1,0 +1,8 @@
+services:
+  envoy:
+    image: envoyproxy/envoy:v1.29-latest
+    container_name: its-middleware-envoy
+    ports:
+      - "50050:50050"
+    volumes:
+      - ./envoy/envoy.yml:/etc/envoy/envoy.yml

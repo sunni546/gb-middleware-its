@@ -1,0 +1,9 @@
+syntax = "proto3";
+package signal;
+option java_package = "com.middleware.grpc";
+
+message TrafficSignalRes {
+  int32 a_ring_movement_number = 1;
+  int32 b_ring_movement_number = 2;
+  int64 collected_unix_time = 3;
+}

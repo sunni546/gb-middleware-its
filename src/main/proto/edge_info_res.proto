@@ -1,0 +1,10 @@
+syntax = "proto3";
+option java_package = "com.middleware.grpc";
+package edge;
+message EdgeInfoRes {
+  string spot_camera_id = 1;
+  string spot_intersection_id = 2;
+  string ecu_info_transmission_yes_or_no = 3;
+  string installed_location_number = 4;
+  int32 lane_offset = 5;
+}

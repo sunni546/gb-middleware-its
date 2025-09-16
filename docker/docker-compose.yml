@@ -1,0 +1,56 @@
+services:
+  redis:
+    image: redis:latest
+    container_name: its-middleware-redis
+    ports:
+      - "${REDIS_PORT}:6379"
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+    networks:
+      - app-network
+
+  mariadb:
+    image: mariadb:latest
+    container_name: its-middleware-mariadb
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MARIA_DB_PASSWORD}
+      - MYSQL_DATABASE=appdb
+      - MYSQL_USER=${MARIA_DB_USERNAME}
+      - MYSQL_PASSWORD=${MARIA_DB_PASSWORD}
+    networks:
+      - app-network
+    volumes:
+      - ./volumes/maria:/var/lib/mysql
+
+  voltdb-default:
+    image: voltdb/voltdb-community:latest
+    container_name: its-camera-voltdb
+    ports:
+      - "21212:21212"
+      - "7777:8080"
+    environment:
+      - VOLT_DB_JDBC_URL=${VOLT_DB_DEFAULT_JDBC_URL}
+      - HOST_COUNT=1
+    networks:
+      - app-network
+    command: ["voltdb", "start"]
+
+  voltdb-traffic:
+    image: voltdb/voltdb-community:latest
+    container_name: its-traffic-voltdb
+    ports:
+      - "21213:21212"
+      - "7778:8080"
+    environment:
+      - VOLT_DB_JDBC_URL=${VOLT_DB_TRAFFIC_JDBC_URL}
+      - HOST_COUNT=1
+    networks:
+      - app-network
+    command: ["voltdb", "start"]
+
+networks:
+  app-network:
+    driver: bridge

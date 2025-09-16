@@ -1,0 +1,20 @@
+syntax = "proto3";
+package edge;
+option java_package = "com.middleware.grpc";
+option java_outer_classname = "EdgeInfoProto";
+import "spot_camera_id_res.proto";
+import "edge_info_res.proto";
+import "ips_in_spot_res.proto";
+import "google/protobuf/empty.proto";
+
+
+service EdgeInfoService {
+  // Edge IP로 SPOT_CAMR_ID 찾기 (C++에서 조회)
+  rpc getSpotCameraId(google.protobuf.Empty) returns (SpotCameraIdRes);
+
+  // Edge IP로 Edge 정보 찾기 (Python 코드 api_conn.py 에서 조회)
+  rpc getEdgeInfo(google.protobuf.Empty) returns (EdgeInfoRes);
+
+  // Edge IP로 Edge 정보 찾기 (Python 코드 statConstrol.py 에서 조회)
+  rpc getAllIpsInSpot(google.protobuf.Empty) returns (IpsInSpotRes);
+}

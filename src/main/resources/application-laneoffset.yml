@@ -1,0 +1,4 @@
+edge:
+  lane-offset-override:
+    ip:
+      "192.168.173.169": 3    # 염전삼거리

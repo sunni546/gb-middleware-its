@@ -1,0 +1,562 @@
+table-config:
+  save-strategies:
+    - table-name: soitgaprdstats # 접근 방향별 통계
+      max-size: 5
+      drain-max-millis: 1000
+      queries:
+        - db: TIBERO
+          sql: |
+            INSERT INTO soitgaprdstats (
+              spot_camr_id, hr_type_cd, stats_bgng_unix_tm, stats_end_unix_tm,
+              totl_trvl, avg_stln_dttn_sped, avg_sect_sped, avg_trfc_dnst, min_trfc_dnst,
+              max_trfc_dnst, avg_lane_ocpn_rt, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :hrTypeCd, :statsBgngUnixTm, :statsEndUnixTm,
+              :totlTrvl, :avgStlnDttnSped, :avgSectSped, :avgTrfcDnst, :minTrfcDnst,
+              :maxTrfcDnst, :avgLaneOcpnRt,
+              CAST((CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - DATE'1970-01-01') * 86400 as NUMBER(10))
+            )
+
+        - db: MARIADB
+          sql: |
+            INSERT INTO soitgaprdstats (
+              spot_camr_id, hr_type_cd, stats_bgng_unix_tm, stats_end_unix_tm,
+              totl_trvl, avg_stln_dttn_sped, avg_sect_sped, avg_trfc_dnst, min_trfc_dnst,
+              max_trfc_dnst, avg_lane_ocpn_rt, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :hrTypeCd, :statsBgngUnixTm, :statsEndUnixTm,
+              :totlTrvl, :avgStlnDttnSped, :avgSectSped, :avgTrfcDnst, :minTrfcDnst,
+              :maxTrfcDnst, :avgLaneOcpnRt, UNIX_TIMESTAMP()
+            )
+
+        - db: VOLTDB
+          sql: |
+            INSERT INTO soitgaprdstats (
+              spot_camr_id, hr_type_cd, stats_bgng_unix_tm, stats_end_unix_tm,
+              totl_trvl, avg_stln_dttn_sped, avg_sect_sped, avg_trfc_dnst, min_trfc_dnst,
+              max_trfc_dnst, avg_lane_ocpn_rt, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :hrTypeCd, :statsBgngUnixTm, :statsEndUnixTm,
+              :totlTrvl, :avgStlnDttnSped, :avgSectSped, :avgTrfcDnst, :minTrfcDnst,
+              :maxTrfcDnst, :avgLaneOcpnRt, SINCE_EPOCH(SECOND, NOW())
+            );
+            
+
+    - table-name: soitgturntypestats # 회전 방향별 통계
+      max-size: 5
+      drain-max-millis: 1000
+      queries:
+        - db: TIBERO
+          sql: |
+            INSERT INTO soitgturntypestats (
+              spot_camr_id, hr_type_cd, turn_type_cd, stats_bgng_unix_tm, stats_end_unix_tm,
+              kncr1_trvl, kncr2_trvl, kncr3_trvl, kncr4_trvl, kncr5_trvl, kncr6_trvl,
+              avg_stln_dttn_sped, avg_sect_sped, crt_unix_tm
+            ) values (
+              :spotCamrId, :hrTypeCd, :turnTypeCd, :statsBgngUnixTm, :statsEndUnixTm,
+              :kncr1Trvl, :kncr2Trvl, :kncr3Trvl, :kncr4Trvl, :kncr5Trvl, :kncr6Trvl,
+              :avgStlnDttnSped, :avgSectSped, CAST((CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - DATE'1970-01-01') * 86400 as NUMBER(10))
+            );
+
+        - db: MARIADB
+          sql: |
+            INSERT INTO soitgturntypestats (
+              spot_camr_id, hr_type_cd, turn_type_cd, stats_bgng_unix_tm, stats_end_unix_tm,
+              kncr1_trvl, kncr2_trvl, kncr3_trvl, kncr4_trvl, kncr5_trvl, kncr6_trvl,
+              avg_stln_dttn_sped, avg_sect_sped, crt_unix_tm
+            ) values (
+              :spotCamrId, :hrTypeCd, :turnTypeCd, :statsBgngUnixTm, :statsEndUnixTm,
+              :kncr1Trvl, :kncr2Trvl, :kncr3Trvl, :kncr4Trvl, :kncr5Trvl, :kncr6Trvl,
+              :avgStlnDttnSped, :avgSectSped, UNIX_TIMESTAMP()
+            );
+
+        - db: VOLTDB
+          sql: |
+            INSERT INTO soitgturntypestats (
+              spot_camr_id, hr_type_cd, turn_type_cd, stats_bgng_unix_tm, stats_end_unix_tm,
+              kncr1_trvl, kncr2_trvl, kncr3_trvl, kncr4_trvl, kncr5_trvl, kncr6_trvl,
+              avg_stln_dttn_sped, avg_sect_sped, crt_unix_tm
+            ) values (
+              :spotCamrId, :hrTypeCd, :turnTypeCd, :statsBgngUnixTm, :statsEndUnixTm,
+              :kncr1Trvl, :kncr2Trvl, :kncr3Trvl, :kncr4Trvl, :kncr5Trvl, :kncr6Trvl,
+              :avgStlnDttnSped, :avgSectSped, SINCE_EPOCH(SECOND, NOW())
+            );
+
+    - table-name: soitgkncrstats # 차종별 통계
+      max-size: 5
+      drain-max-millis: 1000
+      queries:
+        - db: TIBERO
+          sql: |
+            INSERT INTO soitgkncrstats (
+              spot_camr_id, hr_type_cd, kncr_cd, stats_bgng_unix_tm, stats_end_unix_tm,
+              totl_trvl, avg_stln_dttn_sped, avg_sect_sped, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :hrTypeCd, :kncrCd, :statsBgngUnixTm, :statsEndUnixTm,
+              :totlTrvl, :avgStlnDttnSped, :avgSectSped,
+              CAST((CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - DATE'1970-01-01') * 86400 as NUMBER(10))
+            )
+
+        - db: MARIADB
+          sql: |
+            INSERT INTO soitgkncrstats (
+              spot_camr_id, hr_type_cd, kncr_cd, stats_bgng_unix_tm, stats_end_unix_tm,
+              totl_trvl, avg_stln_dttn_sped, avg_sect_sped, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :hrTypeCd, :kncrCd, :statsBgngUnixTm, :statsEndUnixTm,
+              :totlTrvl, :avgStlnDttnSped, :avgSectSped, UNIX_TIMESTAMP()
+            );
+
+        - db: VOLTDB
+          sql: |
+            INSERT INTO soitgkncrstats (
+              spot_camr_id, hr_type_cd, kncr_cd, stats_bgng_unix_tm, stats_end_unix_tm,
+              totl_trvl, avg_stln_dttn_sped, avg_sect_sped, crt_unix_tm
+            ) VALUES(
+              :spotCamrId, :hrTypeCd, :kncrCd, :statsBgngUnixTm, :statsEndUnixTm,
+              :totlTrvl, :avgStlnDttnSped, :avgSectSped, SINCE_EPOCH(SECOND, NOW())
+            )
+
+    - table-name: soitglanestats # 차선별 통계
+      max-size: 5
+      drain-max-millis: 1000
+      queries:
+        - db: TIBERO
+          sql: |
+            INSERT INTO soitglanestats (
+              spot_camr_id, hr_type_cd, lane_no, stats_bgng_unix_tm, stats_end_unix_tm,
+              totl_trvl, avg_stln_dttn_sped, avg_sect_sped, avg_trfc_dnst, min_trfc_dnst,
+              max_trfc_dnst, ocpn_rt, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :hrTypeCd, :laneNo, :statsBgngUnixTm, :statsEndUnixTm,
+              :totlTrvl, :avgStlnDttnSped, :avgSectSped, :avgTrfcDnst, :minTrfcDnst,
+              :maxTrfcDnst, :ocpnRt, CAST((CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - DATE'1970-01-01') * 86400 as NUMBER(10))
+            )
+
+        - db: MARIADB
+          sql: |
+            INSERT INTO soitglanestats (
+              spot_camr_id, hr_type_cd, lane_no, stats_bgng_unix_tm, stats_end_unix_tm,
+              totl_trvl, avg_stln_dttn_sped, avg_sect_sped, avg_trfc_dnst, min_trfc_dnst,
+              max_trfc_dnst, ocpn_rt, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :hrTypeCd, :laneNo, :statsBgngUnixTm, :statsEndUnixTm,
+              :totlTrvl, :avgStlnDttnSped, :avgSectSped, :avgTrfcDnst, :minTrfcDnst,
+              :maxTrfcDnst, :ocpnRt, UNIX_TIMESTAMP()
+            )
+
+        - db: VOLTDB
+          sql: |
+            INSERT INTO soitglanestats (
+              spot_camr_id, hr_type_cd, lane_no, stats_bgng_unix_tm, stats_end_unix_tm,
+              totl_trvl, avg_stln_dttn_sped, avg_sect_sped, avg_trfc_dnst, min_trfc_dnst,
+              max_trfc_dnst, ocpn_rt, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :hrTypeCd, :laneNo, :statsBgngUnixTm, :statsEndUnixTm,
+              :totlTrvl, :avgStlnDttnSped, :avgSectSped, :avgTrfcDnst, :minTrfcDnst,
+              :maxTrfcDnst, :ocpnRt, SINCE_EPOCH(SECOND, NOW())
+            );
+
+    - table-name: soitgcwdtinfo # 보행자 검지
+      max-size: 5
+      drain-max-millis: 1000
+      queries:
+        - db: TIBERO
+          sql: |
+            INSERT INTO soitgcwdtinfo (
+              spot_camr_id, trce_id, dttn_unix_tm, drct_se_cd, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :trceId, :dttnUnixTm, :drctSeCd, CAST((CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - DATE'1970-01-01') * 86400 as NUMBER(10))
+            )
+
+        - db: MARIADB
+          sql: |
+            INSERT INTO soitgcwdtinfo (
+              spot_camr_id, trce_id, dttn_unix_tm, drct_se_cd, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :trceId, :dttnUnixTm, :drctSeCd, UNIX_TIMESTAMP()
+            )
+
+        - db: VOLTDB
+          sql: |
+            INSERT INTO soitgcwdtinfo (
+              spot_camr_id, trce_id, dttn_unix_tm, drct_se_cd, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :trceId, :dttnUnixTm, :drctSeCd, SINCE_EPOCH(SECOND, NOW())
+            );
+
+    - table-name: soitgaprdqueu # 대기행렬 검지
+      max-size: 5
+      drain-max-millis: 1000
+      queries:
+        - db: TIBERO
+          sql: |
+            INSERT INTO soitgaprdqueu (
+              spot_camr_id, stats_bgng_unix_tm, stats_end_unix_tm, rmnn_queu_lngt,
+              max_queu_lngt, crt_unix_tm, img_path_nm, img_file_nm
+            ) VALUES (
+              :spotCamrId, :statsBgngUnixTm, :statsEndUnixTm, :rmnnQueuLngt,
+              :maxQueuLngt, CAST((CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - DATE'1970-01-01') * 86400 as NUMBER(10)),
+              :imgPathNm, :imgFileNm
+            );
+
+        - db: MARIADB
+          sql: |
+            INSERT INTO soitgaprdqueu (
+              spot_camr_id, stats_bgng_unix_tm, stats_end_unix_tm, rmnn_queu_lngt,
+              max_queu_lngt, crt_unix_tm, img_path_nm, img_file_nm
+            ) VALUES (
+              :spotCamrId, :statsBgngUnixTm, :statsEndUnixTm, :rmnnQueuLngt,
+              :maxQueuLngt, UNIX_TIMESTAMP(), :imgPathNm, :imgFileNm
+            );
+
+        - db: VOLTDB
+          sql: |
+            INSERT INTO soitgaprdqueu (
+              spot_camr_id, stats_bgng_unix_tm, stats_end_unix_tm, rmnn_queu_lngt,
+              max_queu_lngt, crt_unix_tm, img_path_nm, img_file_nm
+            ) VALUES (
+              :spotCamrId, :statsBgngUnixTm, :statsEndUnixTm, :rmnnQueuLngt,
+              :maxQueuLngt, SINCE_EPOCH(SECOND, NOW()), :imgPathNm, :imgFileNm
+            );
+
+    - table-name: soitglanequeu # 차선별 대기행렬 검지
+      max-size: 5
+      drain-max-millis: 1000
+      queries:
+        - db: TIBERO
+          sql: |
+            INSERT INTO soitglanequeu (
+              spot_camr_id, lane_no, stats_bgng_unix_tm, stats_end_unix_tm, rmnn_queu_lngt,
+              max_queu_lngt, crt_unix_tm, img_path_nm, img_file_nm
+            ) VALUES (
+              :spotCamrId, :laneNo, :statsBgngUnixTm, :statsEndUnixTm, :rmnnQueuLngt,
+              :maxQueuLngt, CAST((CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - DATE'1970-01-01') * 86400 as NUMBER(10)),
+              :imgPathNm, :imgFileNm
+            );
+
+        - db: MARIADB
+          sql: |
+            INSERT INTO soitglanequeu (
+              spot_camr_id, lane_no, stats_bgng_unix_tm, stats_end_unix_tm, rmnn_queu_lngt,
+              max_queu_lngt, crt_unix_tm, img_path_nm, img_file_nm
+            ) VALUES (
+              :spotCamrId, :laneNo, :statsBgngUnixTm, :statsEndUnixTm, :rmnnQueuLngt,
+              :maxQueuLngt, UNIX_TIMESTAMP(), :imgPathNm, :imgFileNm
+            );
+
+        - db: VOLTDB
+          sql: |
+            INSERT INTO soitglanequeu (
+              spot_camr_id, lane_no, stats_bgng_unix_tm, stats_end_unix_tm, rmnn_queu_lngt,
+              max_queu_lngt, crt_unix_tm, img_path_nm, img_file_nm
+            ) VALUES (
+              :spotCamrId, :laneNo, :statsBgngUnixTm, :statsEndUnixTm, :rmnnQueuLngt,
+              :maxQueuLngt, SINCE_EPOCH(SECOND, NOW()), :imgPathNm, :imgFileNm
+            );
+
+    - table-name: soitgunacevet # 상황 발생 검지
+      max-size: 5
+      drain-max-millis: 1000
+      queries:
+        - db: TIBERO
+          sql: |
+            MERGE INTO soitgunacevet target
+            USING (SELECT :spotCamrId as spot_camr_id, :trceId as trce_id, :ocrnUnixTm as ocrn_unix_tm FROM dual) source
+            ON (target.spot_camr_id = source.spot_camr_id AND target.trce_id = source.trce_id AND target.ocrn_unix_tm = source.ocrn_unix_tm)
+            WHEN MATCHED THEN
+              UPDATE SET
+                evet_type_cd = CASE WHEN :evetTypeCd IS NOT NULL THEN :evetTypeCd ELSE evet_type_cd END,
+                img_path_nm = CASE WHEN :imgPathNm IS NOT NULL THEN :imgPathNm ELSE img_path_nm END,
+                img_file_nm = CASE WHEN :imgFileNm IS NOT NULL THEN :imgFileNm ELSE img_file_nm END,
+                prcs_unix_tm = CASE WHEN :prcsUnixTm IS NOT NULL THEN :prcsUnixTm ELSE prcs_unix_tm END,
+                end_unix_tm = CASE WHEN :endUnixTm IS NOT NULL THEN :endUnixTm ELSE end_unix_tm END,
+                                  crt_unix_tm = CASE WHEN :crtUnixTm IS NOT NULL 
+                    THEN CAST((CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - DATE '1970-01-01') * 86400 AS NUMBER(10)) 
+                    ELSE crt_unix_tm END
+            WHEN NOT MATCHED THEN
+              INSERT (
+                spot_camr_id, trce_id, ocrn_unix_tm, evet_type_cd, img_path_nm,
+                img_file_nm, prcs_unix_tm, end_unix_tm, crt_unix_tm
+              ) VALUES (
+                :spotCamrId, :trceId, :ocrnUnixTm, :evetTypeCd, :imgPathNm,
+                :imgFileNm, :prcsUnixTm, :endUnixTm, CAST((CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - DATE'1970-01-01') * 86400 as NUMBER(10))
+              )
+
+        - db: MARIADB
+          sql: |
+            INSERT INTO soitgunacevet (
+              spot_camr_id, trce_id, ocrn_unix_tm, evet_type_cd, img_path_nm,
+              img_file_nm, prcs_unix_tm, end_unix_tm, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :trceId, :ocrnUnixTm, :evetTypeCd, :imgPathNm,
+              :imgFileNm, :prcsUnixTm, :endUnixTm, UNIX_TIMESTAMP()
+            ) ON DUPLICATE KEY UPDATE
+              evet_type_cd = COALESCE(NULLIF(VALUES(evet_type_cd), ''), evet_type_cd),
+              img_path_nm  = COALESCE(NULLIF(VALUES(img_path_nm),  ''), img_path_nm),
+              img_file_nm  = COALESCE(NULLIF(VALUES(img_file_nm),  ''), img_file_nm),
+              prcs_unix_tm = COALESCE(VALUES(prcs_unix_tm), prcs_unix_tm),
+              end_unix_tm  = COALESCE(VALUES(end_unix_tm), end_unix_tm),
+              crt_unix_tm  = crt_unix_tm;
+
+        - db: VOLTDB
+          sql: |
+            UPSERT INTO soitgunacevet (
+              spot_camr_id, trce_id, ocrn_unix_tm, evet_type_cd, img_path_nm,
+              img_file_nm, prcs_unix_tm, end_unix_tm, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :trceId, :ocrnUnixTm, :evetTypeCd, :imgPathNm,
+              :imgFileNm, :prcsUnixTm, :endUnixTm, SINCE_EPOCH(SECOND, NOW())
+            );
+
+    - table-name: soitgrtmdtinfo_2K # 2K 차량 검지
+      max-size: 5
+      drain-max-millis: 1000
+      queries:
+        - db: TIBERO
+          sql: |
+            INSERT INTO soitgrtmdtinfo_2K (
+              spot_camr_id, kncr_cd, lane_no, turn_type_cd, turn_dttn_unix_tm,
+              turn_dttn_sped, stln_pasg_unix_tm, stln_dttn_sped, vhcl_sect_sped,
+              frst_obsrvn_unix_tm, vhcl_obsrvn_hr, img_path_nm, vhcl_img_file_nm,
+              vhcl_dttn_2k_id, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :kncrCd, :laneNo, :turnTypeCd, :turnDttnUnixTm,
+              :turnDttnSped, :stlnPasgUnixTm, :stlnDttnSped, :vhclSectSped,
+              :frstObsrvnUnixTm, :vhclObsrvnHr, :imgPathNm, :vhclImgFileNm,
+              :vhclDttn2kId, CAST((CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - DATE'1970-01-01') * 86400 as NUMBER(10))
+            );
+
+        - db: MARIADB
+          sql: |
+            INSERT INTO soitgrtmdtinfo_2K (
+              spot_camr_id, kncr_cd, lane_no, turn_type_cd, turn_dttn_unix_tm,
+              turn_dttn_sped, stln_pasg_unix_tm, stln_dttn_sped, vhcl_sect_sped,
+              frst_obsrvn_unix_tm, vhcl_obsrvn_hr, img_path_nm, vhcl_img_file_nm,
+              vhcl_dttn_2k_id, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :kncrCd, :laneNo, :turnTypeCd, :turnDttnUnixTm,
+              :turnDttnSped, :stlnPasgUnixTm, :stlnDttnSped, :vhclSectSped,
+              :frstObsrvnUnixTm, :vhclObsrvnHr, :imgPathNm, :vhclImgFileNm,
+              :vhclDttn2kId, UNIX_TIMESTAMP()
+            );
+
+        - db: VOLTDB
+          sql: |
+            INSERT INTO soitgrtmdtinfo_2K (
+              spot_camr_id, kncr_cd, lane_no, turn_type_cd, turn_dttn_unix_tm,
+              turn_dttn_sped, stln_pasg_unix_tm, stln_dttn_sped, vhcl_sect_sped,
+              frst_obsrvn_unix_tm, vhcl_obsrvn_hr, img_path_nm, vhcl_img_file_nm,
+              vhcl_dttn_2k_id, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :kncrCd, :laneNo, :turnTypeCd, :turnDttnUnixTm,
+              :turnDttnSped, :stlnPasgUnixTm, :stlnDttnSped, :vhclSectSped,
+              :frstObsrvnUnixTm, :vhclObsrvnHr, :imgPathNm, :vhclImgFileNm,
+              :vhclDttn2kId, SINCE_EPOCH(SECOND, NOW())
+            );
+
+    - table-name: soitgenclsttsinfo # 함체 상태
+      max-size: 5
+      drain-max-millis: 1000
+      queries:
+        - db: TIBERO
+          sql: |
+            MERGE INTO soitgenclsttsinfo target
+            USING (SELECT :spotCamrId as spot_camr_id, :prcsUnixTm as prcs_unix_tm FROM dual) source
+            ON (target.spot_camr_id = source.spot_camr_id AND target.prcs_unix_tm = source.prcs_unix_tm)
+            WHEN MATCHED THEN
+              UPDATE SET
+                cnmc_stts_cd = :cnmcSttsCd,
+                eqpm_stts_cd = :eqpmSttsCd,
+                eqpm_tmpt = :eqpmTmpt,
+                pann_stts_cd = :pannSttsCd,
+                hetr_stts_cd = :hetrSttsCd,
+                encl_open_yn = :enclOpenYn,
+                crt_unix_tm = CAST((CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - DATE'1970-01-01') * 86400 as NUMBER(10))
+            WHEN NOT MATCHED THEN
+              INSERT (
+                spot_camr_id, prcs_unix_tm, cnmc_stts_cd, eqpm_stts_cd, eqpm_tmpt,
+                pann_stts_cd, hetr_stts_cd, encl_open_yn, crt_unix_tm
+              ) VALUES (
+                :spotCamrId, :prcsUnixTm, :cnmcSttsCd, :eqpmSttsCd, :eqpmTmpt,
+                :pannSttsCd, :hetrSttsCd, :enclOpenYn, CAST((CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - DATE'1970-01-01') * 86400 as NUMBER(10))
+              )
+
+        - db: MARIADB
+          sql: |
+            INSERT INTO soitgenclsttsinfo (
+              spot_camr_id, prcs_unix_tm, cnmc_stts_cd, eqpm_stts_cd, eqpm_tmpt,
+              pann_stts_cd, hetr_stts_cd, encl_open_yn, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :prcsUnixTm, :cnmcSttsCd, :eqpmSttsCd, :eqpmTmpt,
+              :pannSttsCd, :hetrSttsCd, :enclOpenYn, UNIX_TIMESTAMP()
+            ) ON DUPLICATE KEY UPDATE
+              prcs_unix_tm      = VALUES(prcs_unix_tm),
+              cnmc_stts_cd   = VALUES(cnmc_stts_cd),
+              eqpm_stts_cd  = VALUES(eqpm_stts_cd),
+              eqpm_tmpt   = VALUES(eqpm_tmpt),
+              pann_stts_cd  = VALUES(pann_stts_cd),
+              hetr_stts_cd  = VALUES(hetr_stts_cd),
+              encl_open_yn  = VALUES(encl_open_yn),
+              crt_unix_tm       = UNIX_TIMESTAMP();
+
+        - db: VOLTDB
+          sql: |
+            UPSERT INTO soitgenclsttsinfo (
+              spot_camr_id, prcs_unix_tm, cnmc_stts_cd, eqpm_stts_cd, eqpm_tmpt,
+              pann_stts_cd, hetr_stts_cd, encl_open_yn, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :prcsUnixTm, :cnmcSttsCd, :eqpmSttsCd, :eqpmTmpt,
+              :pannSttsCd, :hetrSttsCd, :enclOpenYn, SINCE_EPOCH(SECOND, NOW())
+            )
+
+    - table-name: soitgcamrsttsinfo # 카메라 상태
+      max-size: 5
+      drain-max-millis: 1000
+      queries:
+        - db: TIBERO
+          sql: |
+            MERGE INTO soitgcamrsttsinfo target
+            USING (SELECT :spotCamrId as spot_camr_id, :instlLocnNo as instl_locn_no, :prcsUnixTm as prcs_unix_tm FROM dual) source
+            ON (target.spot_camr_id = source.spot_camr_id AND target.instl_locn_no = source.instl_locn_no AND target.prcs_unix_tm = source.prcs_unix_tm)
+            WHEN MATCHED THEN
+              UPDATE SET
+                camr_2k_stts_cd = :camr2kSttsCd,
+                ecamr_2k_stts_cd = :ecamr2kSttsCd,
+                camr_4k_stts_cd = :camr4kSttsCd,
+                ecamr_4k_stts_cd = :ecamr4kSttsCd,
+                crt_unix_tm = CAST((CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - DATE'1970-01-01') * 86400 as NUMBER(10))
+            WHEN NOT MATCHED THEN
+              INSERT (
+                spot_camr_id, instl_locn_no, prcs_unix_tm, camr_2k_stts_cd, ecamr_2k_stts_cd,
+                camr_4k_stts_cd, ecamr_4k_stts_cd, crt_unix_tm
+              ) VALUES (
+                :spotCamrId, :instlLocnNo, :prcsUnixTm, :camr2kSttsCd, :ecamr2kSttsCd,
+                :camr4kSttsCd, :ecamr4kSttsCd, CAST((CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - DATE'1970-01-01') * 86400 as NUMBER(10))
+              );
+
+        - db: MARIADB
+          sql: |
+            INSERT INTO soitgcamrsttsinfo (
+              spot_camr_id, instl_locn_no, prcs_unix_tm, camr_2k_stts_cd, ecamr_2k_stts_cd,
+              camr_4k_stts_cd, ecamr_4k_stts_cd, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :instlLocnNo, :prcsUnixTm, :camr2kSttsCd, :ecamr2kSttsCd,
+              :camr4kSttsCd, :ecamr4kSttsCd, UNIX_TIMESTAMP()
+            ) 
+            ON DUPLICATE KEY UPDATE
+              prcs_unix_tm      = VALUES(prcs_unix_tm),
+              camr_2k_stts_cd   = VALUES(camr_2k_stts_cd),
+              ecamr_2k_stts_cd  = VALUES(ecamr_2k_stts_cd),
+              camr_4k_stts_cd   = VALUES(camr_4k_stts_cd),
+              ecamr_4k_stts_cd  = VALUES(ecamr_4k_stts_cd),
+              crt_unix_tm       = UNIX_TIMESTAMP();
+
+        - db: VOLTDB
+          sql: |
+            UPSERT INTO soitgcamrsttsinfo (
+              spot_camr_id, instl_locn_no, prcs_unix_tm, camr_2k_stts_cd, ecamr_2k_stts_cd,
+              camr_4k_stts_cd, ecamr_4k_stts_cd, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :instlLocnNo, :prcsUnixTm, :camr2kSttsCd, :ecamr2kSttsCd,
+              :camr4kSttsCd, :ecamr4kSttsCd, SINCE_EPOCH(SECOND, NOW())
+            );
+
+
+    - table-name: soitgrtmdtinfo # 2K + 4K 머지
+      max-size: 5
+      drain-max-millis: 1000
+      queries:
+        - db: TIBERO
+          sql: |
+            INSERT INTO soitgrtmdtinfo (
+              spot_camr_id, kncr_cd, lane_no, turn_type_cd, turn_dttn_unix_tm,
+              turn_dttn_sped, stln_pasg_unix_tm, stln_dttn_sped, vhcl_sect_sped,
+              frst_obsrvn_unix_tm, vhcl_obsrvn_hr, vhno_nm, vhno_dttn_yn,
+              img_path_nm, vhcl_img_file_nm, nopl_img_file_nm, vhcl_dttn_id, crt_unix_tm
+              )
+            SELECT
+              :spotCamrId, :kncrCd, :laneNo, :turnTypeCd, :turnDttnUnixTm,
+              :turnDttnSped, :stlnPasgUnixTm, :stlnDttnSped, :vhclSectSped,
+              :frstObsrvnUnixTm, :vhclObsrvnHr, :vhnoNm, :vhnoDttnYn,
+              :imgPathNm, :vhclImgFileNm, :noplImgFileNm, :vhclDttnId,
+              CAST((CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - DATE'1970-01-01') * 86400 as NUMBER(10))
+            FROM dual
+            WHERE NOT EXISTS (
+              SELECT 1 FROM soitgrtmdtinfo
+              WHERE spot_camr_id = :spotCamrId
+                AND kncr_cd = :kncrCd
+                AND lane_no = :laneNo
+                AND turn_type_cd = :turnTypeCd
+                AND turn_dttn_unix_tm = :turnDttnUnixTm
+            );
+
+        - db: MARIADB
+          sql: |
+            INSERT IGNORE INTO soitgrtmdtinfo (
+              spot_camr_id, kncr_cd, lane_no, turn_type_cd, turn_dttn_unix_tm,
+              turn_dttn_sped, stln_pasg_unix_tm, stln_dttn_sped, vhcl_sect_sped,
+              frst_obsrvn_unix_tm, vhcl_obsrvn_hr, vhno_nm, vhno_dttn_yn,
+              img_path_nm, vhcl_img_file_nm, nopl_img_file_nm, vhcl_dttn_id, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :kncrCd, :laneNo, :turnTypeCd, :turnDttnUnixTm,
+              :turnDttnSped, :stlnPasgUnixTm, :stlnDttnSped, :vhclSectSped,
+              :frstObsrvnUnixTm, :vhclObsrvnHr, :vhnoNm, :vhnoDttnYn,
+              :imgPathNm, :vhclImgFileNm, :noplImgFileNm, :vhclDttnId,
+              UNIX_TIMESTAMP()
+            );
+
+        - db: VOLTDB
+          sql: |
+            UPSERT INTO soitgrtmdtinfo (
+              spot_camr_id, kncr_cd, lane_no, turn_type_cd, turn_dttn_unix_tm,
+              turn_dttn_sped, stln_pasg_unix_tm, stln_dttn_sped, vhcl_sect_sped,
+              frst_obsrvn_unix_tm, vhcl_obsrvn_hr, vhno_nm, vhno_dttn_yn,
+              img_path_nm, vhcl_img_file_nm, nopl_img_file_nm, vhcl_dttn_id, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :kncrCd, :laneNo, :turnTypeCd, :turnDttnUnixTm,
+              :turnDttnSped, :stlnPasgUnixTm, :stlnDttnSped, :vhclSectSped,
+              :frstObsrvnUnixTm, :vhclObsrvnHr, :vhnoNm, :vhnoDttnYn,
+              :imgPathNm, :vhclImgFileNm, :noplImgFileNm, :vhclDttnId,
+              SINCE_EPOCH(SECOND, NOW())
+            );
+
+    - table-name: soitgrtmdtinfo_4K # 4K 번호판 검지
+      max-size: 5
+      drain-max-millis: 1000
+      queries:
+        - db: TIBERO
+          sql: |
+            INSERT INTO soitgrtmdtinfo_4K (
+              spot_camr_id, kncr_cd, lane_no, stln_pasg_unix_tm, vhno_nm,
+              vhno_dttn_yn, img_path_nm, vhcl_img_file_nm, nopl_img_file_nm,
+              vhcl_dttn_4k_id, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :kncrCd, :laneNo, :stlnPasgUnixTm, :vhnoNm,
+              :vhnoDttnYn, :imgPathNm, :vhclImgFileNm, :noplImgFileNm,
+              :vhclDttn4kId, CAST((CAST(SYS_EXTRACT_UTC(SYSTIMESTAMP) AS DATE) - DATE'1970-01-01') * 86400 as NUMBER(10))
+            );
+
+        - db: MARIADB
+          sql: |
+            INSERT INTO soitgrtmdtinfo_4K (
+              spot_camr_id, kncr_cd, lane_no, stln_pasg_unix_tm, vhno_nm,
+              vhno_dttn_yn, img_path_nm, vhcl_img_file_nm, nopl_img_file_nm,
+              vhcl_dttn_4k_id, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :kncrCd, :laneNo, :stlnPasgUnixTm, :vhnoNm,
+              :vhnoDttnYn, :imgPathNm, :vhclImgFileNm, :noplImgFileNm,
+              :vhclDttn4kId, UNIX_TIMESTAMP()
+            );
+
+        - db: VOLTDB
+          sql: |
+            INSERT INTO soitgrtmdtinfo_4K (
+              spot_camr_id, kncr_cd, lane_no, stln_pasg_unix_tm, vhno_nm,
+              vhno_dttn_yn, img_path_nm, vhcl_img_file_nm, nopl_img_file_nm,
+              vhcl_dttn_4k_id, crt_unix_tm
+            ) VALUES (
+              :spotCamrId, :kncrCd, :laneNo, :stlnPasgUnixTm, :vhnoNm,
+              :vhnoDttnYn, :imgPathNm, :vhclImgFileNm, :noplImgFileNm,
+              :vhclDttn4kId, SINCE_EPOCH(SECOND, NOW())
+            );

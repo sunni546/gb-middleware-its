@@ -1,0 +1,11 @@
+syntax = "proto3";
+package signal;
+option java_package = "com.middleware.grpc";
+option java_outer_classname = "TrafficSignalProto";
+import "google/protobuf/empty.proto";
+import "traffic_signal_res.proto";
+
+service TrafficSignalService {
+  // 신호 정보 변경시 Edge에 전송하는 메서드
+  rpc SubscribeTrafficSignal(google.protobuf.Empty) returns (stream TrafficSignalRes);
+}

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProfile name="!test">
+        <!-- 기본 콘솔 로거 -->
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <!-- 일반 애플리케이션 로그 파일 -->
+        <appender name="APPLICATION_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>logs/middleware/middleware-its_%d{yyyy-MM-dd_HH}.log</fileNamePattern>
+                <maxHistory>720</maxHistory>
+                <totalSizeCap>3GB</totalSizeCap>
+            </rollingPolicy>
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <!-- 엣지 요청 전용 로그 파일 -->
+        <appender name="EDGE_REQUEST_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>logs/edge/edge-requests_%d{yyyy-MM-dd_HH}.log</fileNamePattern>
+                <maxHistory>720</maxHistory>
+                <totalSizeCap>3GB</totalSizeCap>
+            </rollingPolicy>
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <!-- Tibero 데이터베이스 쿼리 로그 파일 -->
+        <appender name="TIBERO_DB_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>logs/tibero/tibero-queries_%d{yyyy-MM-dd_HH}.log</fileNamePattern>
+                <maxHistory>720</maxHistory>
+                <totalSizeCap>3GB</totalSizeCap>
+            </rollingPolicy>
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <!-- MariaDB 데이터베이스 쿼리 로그 파일 -->
+        <appender name="MARIA_DB_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>logs/maria/maria-queries_%d{yyyy-MM-dd_HH}.log</fileNamePattern>
+                <maxHistory>720</maxHistory>
+                <totalSizeCap>3GB</totalSizeCap>
+            </rollingPolicy>
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <!-- VoltDB 데이터베이스 쿼리 로그 파일 -->
+        <appender name="VOLT_DB_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>logs/volt/volt-queries_%d{yyyy-MM-dd_HH}.log</fileNamePattern>
+                <maxHistory>720</maxHistory>
+                <totalSizeCap>3GB</totalSizeCap>
+            </rollingPolicy>
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <!-- 엣지 요청 전용 로거 설정 -->
+        <logger name="EDGE_REQUEST_LOGGER" level="INFO" additivity="false">
+            <appender-ref ref="EDGE_REQUEST_FILE"/>
+        </logger>
+
+        <!-- 데이터베이스별 쿼리 로거 설정 -->
+        <logger name="TIBERO_QUERY_LOGGER" level="INFO" additivity="false">
+            <appender-ref ref="TIBERO_DB_FILE"/>
+        </logger>
+
+        <logger name="MARIA_QUERY_LOGGER" level="INFO" additivity="false">
+            <appender-ref ref="MARIA_DB_FILE"/>
+        </logger>
+
+        <logger name="VOLT_QUERY_LOGGER" level="INFO" additivity="false">
+            <appender-ref ref="VOLT_DB_FILE"/>
+        </logger>
+
+        <!-- 루트 로거 -->
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="APPLICATION_FILE"/>
+        </root>
+    </springProfile>
+
+    <!-- 테스트 환경에서는 콘솔만 사용 -->
+    <springProfile name="test">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            </encoder>
+        </appender>
+        
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+</configuration>

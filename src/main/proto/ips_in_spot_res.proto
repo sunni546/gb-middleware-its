@@ -1,0 +1,10 @@
+syntax = "proto3";
+package edge;
+option java_package = "com.middleware.grpc";
+
+message IpsInSpotRes {
+  string camera_2k_ip = 1;
+  string camera_4k_ip = 2;
+  string edge_2k_ip = 3;
+  string edge_4k_ip = 4;
+}

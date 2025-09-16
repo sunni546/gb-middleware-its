@@ -1,0 +1,112 @@
+server:
+  port: 8080
+spring:
+  grpc:
+    server:
+      port: 50051
+      # v1으로 등록되는데 postman에서는 구버전인 v1alpha만 지원
+      # Config에서 v1alpha 지정해서 빈으로 등록해야 postman에서 활용가능
+      # 아니면 postman에 .proto import 해서 써도 됨
+      reflection:
+        enabled: true
+  application:
+    name: middleware-its
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+  profiles:
+    include: strategy, laneoffset
+  devtools:
+    restart:
+      exclude: static/**, public/**, templates/**, **/*.log, **/tmp/**
+
+datasource:
+  tibero:
+    driver-class-name: com.tmax.tibero.jdbc.TbDriver
+    jdbc-url: ${TIBERO_DB_JDBC_URL}
+    username: ${TIBERO_DB_USERNAME}
+    password: ${TIBERO_DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 10
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      validation-timeout: 5000
+      leak-detection-threshold: 2000
+
+  mariadb:
+    driver-class-name: org.mariadb.jdbc.Driver
+    jdbc-url: ${MARIA_DB_JDBC_URL}
+    username: ${MARIA_DB_USERNAME}
+    password: ${MARIA_DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 10
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      validation-timeout: 5000
+      leak-detection-threshold: 2000
+
+  voltdb:
+    default:
+      driver-class-name: org.voltdb.jdbc.Driver
+      jdbc-url: ${VOLT_DB_DEFAULT_JDBC_URL}
+      hikari:
+        maximum-pool-size: 10
+        minimum-idle: 10
+        idle-timeout: 30000
+        max-lifetime: 1800000
+        connection-timeout: 30000
+        validation-timeout: 5000
+        leak-detection-threshold: 2000
+
+    traffic:
+      driver-class-name: org.voltdb.jdbc.Driver
+      jdbc-url: ${VOLT_DB_TRAFFIC_JDBC_URL}
+      hikari:
+        maximum-pool-size: 3
+        minimum-idle: 3
+        idle-timeout: 30000
+        max-lifetime: 1800000
+        connection-timeout: 30000
+        validation-timeout: 5000
+        leak-detection-threshold: 2000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+edge:
+  self-info:
+    enabled: true
+  generated:
+    enabled: true
+  cache:
+    scheduler:
+      enabled: false
+      cron: "0 0 0 * * *"
+traffic-signal:
+  enabled: false
+
+logging:
+  level:
+    root: info
+#    org.voltdb: debug
+#    # 데이터소스 설정 로깅
+#    com.zaxxer.hikari: debug
+#    com.zaxxer.hikari.HikariConfig: debug
+#    com.zaxxer.hikari.HikariDataSource: debug
+#    # Spring Boot 데이터소스 자동 설정 로깅
+#    org.springframework.boot.autoconfigure.jdbc: debug
+#    # 커스텀 설정 로깅
+#    com.middleware.common.config: debug

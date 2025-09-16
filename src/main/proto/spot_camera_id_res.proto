@@ -1,0 +1,7 @@
+syntax = "proto3";
+package edge;
+option java_package = "com.middleware.grpc";
+
+message SpotCameraIdRes {
+  string spot_camera_id = 1;
+}
